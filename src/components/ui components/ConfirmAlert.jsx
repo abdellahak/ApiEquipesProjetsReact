@@ -1,8 +1,8 @@
-export default function ConfirmAlert({isOpen, onClose, onConfirm, title, message}) {
+export default function ConfirmAlert({onClose, onConfirm, title, message}) {
   return (
     <>
       <div
-        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999 ${isOpen? "":"hidden"}`}
+        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999`}
       >
         <div className={`modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]`}>
         </div>

@@ -28,7 +28,6 @@ const villes = [
   "Témara",
 ];
 export default function AjouterPersonne({
-  isModalOpen,
   setIsModalOpen,
   personnes,
   setPersonnes,
@@ -88,9 +87,7 @@ export default function AjouterPersonne({
   return (
     <>
       <div
-        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999 ${
-          isModalOpen ? "" : "hidden"
-        }`}
+        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999`}
       >
         <div className="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div className="relative w-full max-w-[584px] rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">

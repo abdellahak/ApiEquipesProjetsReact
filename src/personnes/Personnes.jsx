@@ -27,7 +27,7 @@ export default function Personnes() {
     axios.get("http://127.0.0.1:8000/api/personnes").then((res) => {
       setPersonnes(res.data.data);
     });
-  });
+  },[]);
 
   function supprimerPersonne(personne) {
     console.log(personne);
@@ -73,7 +73,7 @@ export default function Personnes() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Ville
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -151,37 +151,46 @@ export default function Personnes() {
           </div>
         </div>
         <div>
-          <AjouterPersonne
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    setPersonnes={setPersonnes}
-                    personnes={personnes}
-                  />
-          <ConfirmAlert
-            isOpen={isConfirmAlertOpen}
-            onClose={() => {
-              setIsConfirmAlertOpen(false);
-              setPersonneToDelete(null);
-            }}
-            onConfirm={() => {
-              if (personneToDelete !== null) {
-                supprimerPersonne(personneToDelete);
-                setIsConfirmAlertOpen(false);
-              }
-            }}
-            title={"Supprimer un projet"}
-            message={`Êtes-vous sûr de vouloir supprimer la personne ${
-              personneToDelete?.nom + " " + personneToDelete?.prenom ?? ""
-            } ?`}
-          />
-          <EditPersonne
-            isModalOpen={isEditPersonneProjetOpen}
-            setIsModalOpen={setIsEditPersonneProjetOpen}
-            setPersonnes={setPersonnes}
-            personnes={personnes}
-            personne={personneToEdit}
-            setPersonne={setPersonneToEdit}
-          />
+          {
+            isModalOpen && (
+              <AjouterPersonne
+                        setIsModalOpen={setIsModalOpen}
+                        setPersonnes={setPersonnes}
+                        personnes={personnes}
+                      />
+            )
+          }
+          {
+            isConfirmAlertOpen && (
+              <ConfirmAlert
+                onClose={() => {
+                  setIsConfirmAlertOpen(false);
+                  setPersonneToDelete(null);
+                }}
+                onConfirm={() => {
+                  if (personneToDelete !== null) {
+                    supprimerPersonne(personneToDelete);
+                    setIsConfirmAlertOpen(false);
+                  }
+                }}
+                title={"Supprimer un projet"}
+                // spell-checker: disable
+                message={`Êtes-vous sûr de vouloir supprimer cette personne?`}
+                // spell-checker: enable
+              />
+            )
+          }
+          {
+            isEditPersonneProjetOpen && (
+              <EditPersonne
+                setIsModalOpen={setIsEditPersonneProjetOpen}
+                setPersonnes={setPersonnes}
+                personnes={personnes}
+                personne={personneToEdit}
+                setPersonne={setPersonneToEdit}
+              />
+            )
+          }
         </div>
       </div>
     </>

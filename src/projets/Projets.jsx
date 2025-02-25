@@ -1,12 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Plus,
-  Filter,
-  Trash,
-  PenBox,
-  UserPlus,
-  Pointer
-} from "lucide-react";
+import { Plus, Filter, Trash, PenBox, UserPlus, Pointer } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -34,7 +27,8 @@ export default function Projets() {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalProjetOpen, setIsEditModalProjetOpen] = useState(false);
-  const [isAffecterMembresModalOpen, setIsAffecterMembresModalOpen] = useState(false);
+  const [isAffecterMembresModalOpen, setIsAffecterMembresModalOpen] =
+    useState(false);
   const [projectToEdit, setProjectToEdit] = useState({
     id: "",
     intitule: "",
@@ -45,6 +39,8 @@ export default function Projets() {
   const [projectToFinish, setProjectToFinish] = useState(null);
   const [isConfirmAlertOpen, setIsConfirmAlertOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [isConfirmReniataliserAlertOpen, setIsConfirmReniataliserAlertOpen] = useState(false);
+  const [projectToReniataliser, setProjectToReniataliser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -125,6 +121,25 @@ export default function Projets() {
       });
   }
 
+  function reniataliserDateFinDeProjet(projet) {
+    axios.patch(`http://127.0.1:8000/api/projets/${projet.id}`, {
+        date_fin:null,
+    }).then(()=>{
+      setProjects(
+        projects.map((p) =>
+          p.id === projet.id ? { ...p, date_fin: null } : p
+        )
+      );
+    })
+    .catch((err) => {
+      console.log(new Date());
+      console.log(err);
+      alert("Failed to finish the project. Please try again.");
+    });
+  }
+
+
+
   function isEnRetard(project) {
     const currentDate = new Date().toISOString().split("T")[0];
     const startDate = new Date(project.date_debut).toISOString().split("T")[0];
@@ -196,7 +211,7 @@ export default function Projets() {
                   <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Durée (jours)
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -248,15 +263,28 @@ export default function Projets() {
                           {new Date(project.date_debut).toLocaleDateString()}
                         </div>
                       </td>
-                      <td className="whitespace-nowrap">
+                      <td className="whitespace-nowrap overflow-hidden">
                         {project.date_fin ? (
-                          <div className="text-sm text-gray-500 px-3 py-4 ">
-                            {new Date(project.date_fin).toLocaleDateString()}
+                          <div className="text-sm group relative w-full h-fit ">
+                            <div className="px-3 py-4  text-gray-500">
+                              {new Date(project.date_fin).toLocaleDateString()}
+                            </div>
+                            <div className="absolute h-full w-full bg-black/20 flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                              <button className="text-brand-600  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1"
+                              onClick={()=>{
+                                setIsConfirmReniataliserAlertOpen(true);
+                                setProjectToReniataliser(project);
+                              }}
+                              >
+                              <Trash className="h-5 w-5 mr-2" />
+                                Réinitialiser
+                              </button>
+                            </div>
                           </div>
                         ) : (
                           <button
                             to={`/projects/${project.id}`}
-                            className="text-brand-600 hover:text-brand-900  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1"
+                            className="text-brand-600 hover:text-brand-900  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1 w-full"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsFinishModalProjetOpen(true);
@@ -316,12 +344,13 @@ export default function Projets() {
         </div>
       </div>
       <div>
-        <AjouterProjet
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          setProjects={setProjects}
-          projects={projects}
-        />
+        {isModalOpen && (
+          <AjouterProjet
+            setIsModalOpen={setIsModalOpen}
+            setProjects={setProjects}
+            projects={projects}
+          />
+        )}
         <EditProjet
           isModalOpen={isEditModalProjetOpen}
           setIsModalOpen={setIsEditModalProjetOpen}
@@ -330,51 +359,71 @@ export default function Projets() {
           project={projectToEdit}
           setProject={setProjectToEdit}
         />
+        {isAffecterMembresModalOpen && (
+          <AffecterMembres
+            setIsModalOpen={setIsAffecterMembresModalOpen}
+            setProjects={setProjects}
+            projects={projects}
+            project={projectToEdit}
+            setProject={setProjectToEdit}
+          />
+        )}
+        {isConfirmAlertOpen && (
+          <ConfirmAlert
+            onClose={() => {
+              setIsConfirmAlertOpen(false);
+              setProjectToDelete(null);
+            }}
+            onConfirm={() => {
+              if (projectToDelete !== null) {
+                supprimerProjet(projectToDelete);
+                setIsConfirmAlertOpen(false);
+              }
+            }}
+            title={"Supprimer un projet"}
+            message={`Êtes-vous sûr de vouloir supprimer le projet ${
+              projectToDelete?.intitule ?? ""
+            } ?`}
+          />
+        )}
+        {isFinishModalProjetOpen && (
+          <ConfirmAlert
+            onClose={() => {
+              setIsFinishModalProjetOpen(false);
+              setProjectToFinish(null);
+            }}
+            onConfirm={() => {
+              if (projectToFinish !== null) {
+                terminerProjet(projectToFinish);
+                setIsFinishModalProjetOpen(false);
+              }
+            }}
+            title={"Terminer un projet"}
+            message={`Êtes-vous sûr de vouloir terminer le projet ${
+              projectToFinish?.intitule ?? ""
+            } ?`}
+          />
+        )}
         {
-          isAffecterMembresModalOpen && (
-            <AffecterMembres
-              setIsModalOpen={setIsAffecterMembresModalOpen}
-              setProjects={setProjects}
-              projects={projects}
-              project={projectToEdit}
-              setProject={setProjectToEdit}
+          isConfirmReniataliserAlertOpen && (
+            <ConfirmAlert
+              onClose={() => {
+                setIsConfirmReniataliserAlertOpen(false);
+                setProjectToReniataliser(null);
+              }}
+              onConfirm={() => {
+                if (projectToReniataliser !== null) {
+                  reniataliserDateFinDeProjet(projectToReniataliser);
+                  setIsConfirmReniataliserAlertOpen(false);
+                }
+              }}
+              title={"Réinitialiser la date de fin d'un projet"}
+              message={`Êtes-vous sûr de vouloir réinitialiser la date de fin du projet ${
+                projectToReniataliser?.intitule ?? ""
+              } ?`}
             />
           )
         }
-        <ConfirmAlert
-          isOpen={isConfirmAlertOpen}
-          onClose={() => {
-            setIsConfirmAlertOpen(false);
-            setProjectToDelete(null);
-          }}
-          onConfirm={() => {
-            if (projectToDelete !== null) {
-              supprimerProjet(projectToDelete);
-              setIsConfirmAlertOpen(false);
-            }
-          }}
-          title={"Supprimer un projet"}
-          message={`Êtes-vous sûr de vouloir supprimer le projet ${
-            projectToDelete?.intitule ?? ""
-          } ?`}
-        />
-        <ConfirmAlert
-          isOpen={isFinishModalProjetOpen}
-          onClose={() => {
-            setIsFinishModalProjetOpen(false);
-            setProjectToFinish(null);
-          }}
-          onConfirm={() => {
-            if (projectToFinish !== null) {
-              terminerProjet(projectToFinish);
-              setIsFinishModalProjetOpen(false);
-            }
-          }}
-          title={"Terminer un projet"}
-          message={`Êtes-vous sûr de vouloir terminer le projet ${
-            projectToFinish?.intitule ?? ""
-          } ?`}
-        />
       </div>
     </div>
   );

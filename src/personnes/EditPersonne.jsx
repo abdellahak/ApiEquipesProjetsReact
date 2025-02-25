@@ -30,7 +30,6 @@ const villes = [
 ];
 
 export default function EditPersonne({
-  isModalOpen,
   setIsModalOpen,
   personnes,
   setPersonnes,
@@ -59,6 +58,11 @@ export default function EditPersonne({
     return validated;
   }
 
+  const selectedCity =
+    personne.ville && !villes.includes(personne.ville)
+      ? "Other"
+      : personne.villeOption || personne.ville || "";
+
   function handleSubmit(e) {
     e.preventDefault();
     if (validateForm() === false) {
@@ -86,9 +90,7 @@ export default function EditPersonne({
   return (
     <>
       <div
-        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999 ${
-          isModalOpen ? "" : "hidden"
-        }`}
+        className={`fixed inset-0 flex items-center justify-center p-5 overflow-y-auto modal z-99999`}
       >
         <div className="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div className="relative w-full max-w-[584px] rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
@@ -164,13 +166,13 @@ export default function EditPersonne({
                   Ville
                 </label>
                 <select
-                  value={personne.villeOption || ""}
+                  value={selectedCity}
                   onChange={(e) => {
                     const option = e.target.value;
                     setPersonne({
                       ...personne,
                       villeOption: option,
-                      ville: option !== "Other" ? option : "",
+                      ville: option !== "Other" ? option : personne.ville,
                     });
                   }}
                   className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
@@ -185,7 +187,7 @@ export default function EditPersonne({
                   ))}
                   <option value="Other">Autre...</option>
                 </select>
-                {personne.villeOption === "Other" && (
+                {(selectedCity === "Other" || (personne.ville && !villes.includes(personne.ville))) && (
                   <input
                     type="text"
                     placeholder="Entrez une ville"
