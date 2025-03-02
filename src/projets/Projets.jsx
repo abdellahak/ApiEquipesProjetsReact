@@ -39,18 +39,25 @@ export default function Projets() {
   const [projectToFinish, setProjectToFinish] = useState(null);
   const [isConfirmAlertOpen, setIsConfirmAlertOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
-  const [isConfirmReniataliserAlertOpen, setIsConfirmReniataliserAlertOpen] = useState(false);
+  const [isConfirmReniataliserAlertOpen, setIsConfirmReniataliserAlertOpen] =
+    useState(false);
   const [projectToReniataliser, setProjectToReniataliser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(token);
     axios
-      .get("http://127.0.0.1:8000/api/projets")
+      .get("http://127.0.0.1:8000/api/projets", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => setProjects(res.data?.data || []))
       .catch((err) =>
         console.error("Erreur lors de la récupération des projets:", err)
       );
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (statusFilter === "Tous") {
@@ -92,7 +99,11 @@ export default function Projets() {
 
   function supprimerProjet(projet) {
     axios
-      .delete(`http://127.0.0.1:8000/api/projets/${projet.id}`)
+      .delete(`http://127.0.0.1:8000/api/projets/${projet.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
         setProjects(projects.filter((p) => p.id !== projet.id));
       })
@@ -106,6 +117,9 @@ export default function Projets() {
     axios
       .patch(`http://127.0.0.1:8000/api/projets/${projet.id}`, {
         date_fin: today,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then(() => {
         setProjects(
@@ -122,23 +136,26 @@ export default function Projets() {
   }
 
   function reniataliserDateFinDeProjet(projet) {
-    axios.patch(`http://127.0.1:8000/api/projets/${projet.id}`, {
-        date_fin:null,
-    }).then(()=>{
-      setProjects(
-        projects.map((p) =>
-          p.id === projet.id ? { ...p, date_fin: null } : p
-        )
-      );
-    })
-    .catch((err) => {
-      console.log(new Date());
-      console.log(err);
-      alert("Failed to finish the project. Please try again.");
-    });
+    axios
+      .patch(`http://127.0.1:8000/api/projets/${projet.id}`, {
+        date_fin: null,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        setProjects(
+          projects.map((p) =>
+            p.id === projet.id ? { ...p, date_fin: null } : p
+          )
+        );
+      })
+      .catch((err) => {
+        console.log(new Date());
+        console.log(err);
+        alert("Failed to finish the project. Please try again.");
+      });
   }
-
-
 
   function isEnRetard(project) {
     const currentDate = new Date().toISOString().split("T")[0];
@@ -270,13 +287,14 @@ export default function Projets() {
                               {new Date(project.date_fin).toLocaleDateString()}
                             </div>
                             <div className="absolute h-full w-full bg-black/20 flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                              <button className="text-brand-600  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1"
-                              onClick={()=>{
-                                setIsConfirmReniataliserAlertOpen(true);
-                                setProjectToReniataliser(project);
-                              }}
+                              <button
+                                className="text-brand-600  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1"
+                                onClick={() => {
+                                  setIsConfirmReniataliserAlertOpen(true);
+                                  setProjectToReniataliser(project);
+                                }}
                               >
-                              <Trash className="h-5 w-5 mr-2" />
+                                <Trash className="h-5 w-5 mr-2" />
                                 Réinitialiser
                               </button>
                             </div>
@@ -404,26 +422,24 @@ export default function Projets() {
             } ?`}
           />
         )}
-        {
-          isConfirmReniataliserAlertOpen && (
-            <ConfirmAlert
-              onClose={() => {
+        {isConfirmReniataliserAlertOpen && (
+          <ConfirmAlert
+            onClose={() => {
+              setIsConfirmReniataliserAlertOpen(false);
+              setProjectToReniataliser(null);
+            }}
+            onConfirm={() => {
+              if (projectToReniataliser !== null) {
+                reniataliserDateFinDeProjet(projectToReniataliser);
                 setIsConfirmReniataliserAlertOpen(false);
-                setProjectToReniataliser(null);
-              }}
-              onConfirm={() => {
-                if (projectToReniataliser !== null) {
-                  reniataliserDateFinDeProjet(projectToReniataliser);
-                  setIsConfirmReniataliserAlertOpen(false);
-                }
-              }}
-              title={"Réinitialiser la date de fin d'un projet"}
-              message={`Êtes-vous sûr de vouloir réinitialiser la date de fin du projet ${
-                projectToReniataliser?.intitule ?? ""
-              } ?`}
-            />
-          )
-        }
+              }
+            }}
+            title={"Réinitialiser la date de fin d'un projet"}
+            message={`Êtes-vous sûr de vouloir réinitialiser la date de fin du projet ${
+              projectToReniataliser?.intitule ?? ""
+            } ?`}
+          />
+        )}
       </div>
     </div>
   );
