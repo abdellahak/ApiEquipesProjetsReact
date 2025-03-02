@@ -113,13 +113,19 @@ export default function Projets() {
 
   function terminerProjet(projet) {
     const today = new Date().toISOString().split("T")[0];
+    console.log(localStorage.getItem("token"));
     axios
-      .patch(`http://127.0.0.1:8000/api/projets/${projet.id}`, {
-        date_fin: today,
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .patch(
+        `http://127.0.0.1:8000/api/projets/${projet.id}`,
+        {
+          date_fin: today,
         },
-      })
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then(() => {
         setProjects(
           projects.map((p) =>
@@ -136,12 +142,17 @@ export default function Projets() {
 
   function reniataliserDateFinDeProjet(projet) {
     axios
-      .patch(`http://127.0.1:8000/api/projets/${projet.id}`, {
-        date_fin: null,
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .patch(
+        `http://127.0.1:8000/api/projets/${projet.id}`,
+        {
+          date_fin: null,
         },
-      })
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then(() => {
         setProjects(
           projects.map((p) =>
