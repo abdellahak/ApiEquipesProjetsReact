@@ -17,7 +17,11 @@ export default function AffecterMembres({
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/personnes")
+      .get("http://127.0.0.1:8000/api/personnes", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         setPersonnes(response.data.data);
       })
@@ -26,7 +30,11 @@ export default function AffecterMembres({
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/projet/${project.id}/personnes`)
+      .get(`http://127.0.0.1:8000/api/projet/${project.id}/personnes`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         setMembres(response.data.personnes);
       })
@@ -43,6 +51,10 @@ export default function AffecterMembres({
     axios
       .post(`http://127.0.0.1:8000/api/projets/${project.id}/personne`, {
         personne_id: selectedPerson,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
       .then((response) => {
         console.log(response.data.data);

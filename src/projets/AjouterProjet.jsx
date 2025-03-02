@@ -1,7 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function AjouterProjet({ setIsModalOpen, projects, setProjects }) {
+export default function AjouterProjet({
+  setIsModalOpen,
+  projects,
+  setProjects,
+}) {
   const [errorMessages, setErrorMessages] = useState({
     intitule: "",
     date_debut: "",
@@ -13,10 +17,11 @@ export default function AjouterProjet({ setIsModalOpen, projects, setProjects })
     date_debut: "",
     duree: 1,
   });
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
-  function validateForm(date_debut, currentDate){
+  function validateForm(date_debut, currentDate) {
     let validated = true;
-    const errors = {}
+    const errors = {};
     if (projet.intitule.length === 0) {
       errors.intitule = "L'intitulé est requis";
       validated = false;
@@ -37,21 +42,29 @@ export default function AjouterProjet({ setIsModalOpen, projects, setProjects })
     e.preventDefault();
     const currentDate = new Date();
     const date_debut = new Date(projet.date_debut);
-    if(validateForm(date_debut, currentDate) === false){
+    if (validateForm(date_debut, currentDate) === false) {
       return;
     }
-    axios.post("http://127.0.0.1:8000/api/projets", projet)
-    .then((res) => {
-      setProjects([...projects, res.data.data]);
-      setProjet({
-        intitule: "",
-        date_debut: "",
-        duree: 1,
+    axios
+      .post("http://127.0.0.1:8000/api/projets", projet, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setProjects([...projects, res.data.data]);
+        setProjet({
+          intitule: "",
+          date_debut: "",
+          duree: 1,
+        });
+        setIsModalOpen(false);
+      })
+      .catch((err) => {
+        setErrorMessages({
+          otherError: err.response?.data?.message || "An error occurred",
+        });
       });
-      setIsModalOpen(false);
-    }).catch((err) => {
-      setErrorMessages({otherError: err.response?.data?.message || "An error occurred"});
-    });
   }
   return (
     <>
@@ -81,7 +94,7 @@ export default function AjouterProjet({ setIsModalOpen, projects, setProjects })
 
           <form onSubmit={handleSubmit}>
             <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-              Details de Projet : 
+              Details de Projet :
             </h4>
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="col-span-2">
@@ -131,9 +144,13 @@ export default function AjouterProjet({ setIsModalOpen, projects, setProjects })
             <div className="mt-1.5 text-sm text-error-500" id="error-msg">
               <ul>
                 {errorMessages.intitule && <li>{errorMessages.intitule}</li>}
-                {errorMessages.date_debut && <li>{errorMessages.date_debut}</li>}
+                {errorMessages.date_debut && (
+                  <li>{errorMessages.date_debut}</li>
+                )}
                 {errorMessages.duree && <li>{errorMessages.duree}</li>}
-                {errorMessages.otherError && <li>{errorMessages.otherError}</li>}
+                {errorMessages.otherError && (
+                  <li>{errorMessages.otherError}</li>
+                )}
               </ul>
             </div>
 

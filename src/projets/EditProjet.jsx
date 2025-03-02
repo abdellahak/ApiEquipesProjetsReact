@@ -43,7 +43,11 @@ export default function EditProjet({
       return;
     }
     axios
-      .put(`http://127.0.0.1:8000/api/projets/${project.id}`, project)
+      .put(`http://127.0.0.1:8000/api/projets/${project.id}`, project, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setProjects(
           projects.map((p) => (p.id === project.id ? res.data.data : p))

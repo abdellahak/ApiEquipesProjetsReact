@@ -46,7 +46,6 @@ export default function Projets() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(token);
     axios
       .get("http://127.0.0.1:8000/api/projets", {
         headers: {
