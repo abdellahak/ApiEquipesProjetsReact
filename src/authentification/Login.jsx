@@ -34,9 +34,8 @@ const LoginForm = ({setUserToken}) => {
         email: "",
         password: "",
       });
-      setUserToken(response.data);
-      console.log(response.data.token);
-      localStorage.setItem("token", response.data.token);
+      setUserToken(response.data.data.token);
+      localStorage.setItem("token", response.data.data.token);
       navigate("/dashboard");
     } catch (error) {
       setError(error.response.data.message);
