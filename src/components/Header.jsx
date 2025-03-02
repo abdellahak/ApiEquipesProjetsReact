@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { FolderKanban, Home, Users, LogOut } from "lucide-react";
 import { useLocation } from "react-router-dom";
-// import { logout } from "../utils/auth";
 
 export default function Header() {
   const { pathname } = useLocation();
@@ -40,13 +39,16 @@ export default function Header() {
             </div>
           </div>
           <div className="flex items-center">
-            {/* <button
-                onClick={logout}
+            <button
+                onClick={()=>{
+                  localStorage.removeItem("token");
+                  window.location.href = "/login";
+                }}
                 className="flex items-center text-gray-500 hover:text-gray-700"
               >
                 <LogOut className="h-5 w-5 mr-2" />
                 Logout
-              </button> */}
+              </button>
           </div>
         </div>
       </div>
