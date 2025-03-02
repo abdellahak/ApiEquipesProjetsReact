@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, User2, Mail, Lock} from "lucide-react";
+import { ArrowLeft, User2, Mail, Lock } from "lucide-react";
+import { register } from "../services/authService";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -9,20 +10,61 @@ export default function Register() {
     password: "",
     confirmPassword: "",
   });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Formulaire d'inscription soumis:", formData);
-    // Ajoutez votre logique d'inscription ici
+    setMessage("");
+    setError("");
+
+    try {
+      if (formData.password !== formData.confirmPassword) {
+        setError("Les mots de passe ne correspondent pas");
+        return;
+      }
+
+      const response = await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.confirmPassword,
+      });
+
+      setMessage(response.data.message);
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      setError(error.response.data.message);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      {error && (
+        <div
+          className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+          role="alert"
+        >
+          <span className="font-medium">Erreur:</span> {error}
+        </div>
+      )}
+      {message && (
+        <div
+          className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+          role="alert"
+        >
+          <span className="font-medium">Succès:</span> {message}
+        </div>
+      )}
       <div className="max-w-xl w-full bg-white px-8 py-16 rounded-xl shadow-md relative">
-              <button class="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center">
-                <ArrowLeft className="mx-4"/>{" "}
-                Back to Home
-              </button>
+        <button className="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center">
+          <ArrowLeft className="mx-4" /> Retour à l'accueil
+        </button>
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Créer un compte</h2>
           <p className="text-gray-600 mt-2">Inscrivez-vous pour commencer</p>
