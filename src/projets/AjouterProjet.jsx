@@ -83,7 +83,6 @@ export default function AjouterProjet({ setIsModalOpen, projects, setProjects })
             <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
               Details de Projet : 
             </h4>
-
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="col-span-2">
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
