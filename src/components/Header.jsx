@@ -6,9 +6,9 @@ import { useLocation } from "react-router-dom";
 export default function Header() {
   const { pathname } = useLocation();
   const navigation = [
-    { name: "Dashboard", href: "/", icon: Home },
-    { name: "Projets", href: "/projets", icon: FolderKanban },
-    { name: "personnes", href: "/personnes", icon: Users },
+    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Projets", href: "/dashboard/projets", icon: FolderKanban },
+    { name: "personnes", href: "/dashboard/personnes", icon: Users },
   ];
 
   return (

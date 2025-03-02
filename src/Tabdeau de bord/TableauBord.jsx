@@ -20,13 +20,21 @@ export default function TableauBord() {
   const [personnes, setPersonnes] = useState([]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/personnes").then((res) => {
+    axios.get("http://127.0.0.1:8000/api/personnes", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
       setPersonnes(res.data.data);
     });
   }, []);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/projets").then((res) => {
+    axios.get("http://127.0.0.1:8000/api/projets", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
       setProjects(res.data.data);
     });
   }, []);
