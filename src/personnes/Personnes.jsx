@@ -24,15 +24,24 @@ export default function Personnes() {
   const [personneToDelete, setPersonneToDelete] = useState(null);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/personnes").then((res) => {
+    axios.get("http://127.0.0.1:8000/api/personnes", {
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
       setPersonnes(res.data.data);
     });
   },[]);
 
   function supprimerPersonne(personne) {
-    console.log(personne);
     axios
-      .delete(`http://127.0.0.1:8000/api/personnes/${personne.id}`)
+      .delete(`http://127.0.0.1:8000/api/personnes/${personne.id}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
       .then(() => {
         setPersonnes(personnes.filter((p) => p.id !== personne.id));
       })

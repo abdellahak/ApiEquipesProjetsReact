@@ -69,7 +69,11 @@ export default function EditPersonne({
       return;
     }
     axios
-      .put(`http://127.0.0.1:8000/api/personnes/${personne.id}`, personne)
+      .put(`http://127.0.0.1:8000/api/personnes/${personne.id}`, personne, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setPersonnes(
           personnes.map((p) => (p.id === personne.id ? res.data.data : p))

@@ -67,7 +67,11 @@ export default function AjouterPersonne({
       return;
     }
     axios
-      .post("http://127.0.0.1:8000/api/personnes", personne)
+      .post("http://127.0.0.1:8000/api/personnes", personne, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setPersonnes([...personnes, res.data.data]);
         setPersonne({
