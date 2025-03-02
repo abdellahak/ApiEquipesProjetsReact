@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { ArrowLeft, User2, Mail, Lock } from "lucide-react";
 import { register } from "../services/authService";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,7 +63,9 @@ export default function Register() {
         </div>
       )}
       <div className="max-w-xl w-full bg-white px-8 py-16 rounded-xl shadow-md relative">
-        <button className="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center">
+        <button 
+        onClick={() => navigate("/")}
+        className="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center">
           <ArrowLeft className="mx-4" /> Retour à l'accueil
         </button>
         <div className="text-center mb-8">
