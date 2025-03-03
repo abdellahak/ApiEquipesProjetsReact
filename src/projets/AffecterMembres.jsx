@@ -49,15 +49,18 @@ export default function AffecterMembres({
 
   function AjouterMembre() {
     axios
-      .post(`http://127.0.0.1:8000/api/projets/${project.id}/personne`, {
-        personne_id: selectedPerson,
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      .post(
+        `http://127.0.0.1:8000/api/projets/${project.id}/personne`,
+        {
+          personne_id: selectedPerson,
         },
-      })
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
       .then((response) => {
-        console.log(response.data.data);
         setMembres([...membres, response.data.data]);
         setSelectedPerson(null);
       })
@@ -70,16 +73,19 @@ export default function AffecterMembres({
     console.log({ personne_id: membre.id });
     axios
       .delete(`http://127.0.0.1:8000/api/projet/${project.id}/personne`, {
-        data: {
-          personne_id: membre.id,
-        },
+      data: {
+        personne_id: membre.id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       })
       .then((response) => {
-        setMembres(membres.filter((m) => m.id !== membre.id));
+      setMembres(membres.filter((m) => m.id !== membre.id));
       })
       .catch((error) => {
-        console.error(error);
-        alert(error.message);
+      console.error(error);
+      alert(error.message);
       });
   }
   return (

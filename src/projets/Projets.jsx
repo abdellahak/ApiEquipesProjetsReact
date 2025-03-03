@@ -296,7 +296,7 @@ export default function Projets() {
                             <div className="px-3 py-4  text-gray-500">
                               {new Date(project.date_fin).toLocaleDateString()}
                             </div>
-                            <div className="absolute h-full w-full bg-black/20 flex items-center justify-center -bottom-10 group-hover:bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            <div className="absolute h-full w-full bg-black/20 flex items-center justify-center bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                               <button
                                 className="text-brand-600  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1"
                                 onClick={() => {
@@ -312,7 +312,7 @@ export default function Projets() {
                         ) : (
                           <button
                             to={`/projects/${project.id}`}
-                            className="text-brand-600 hover:text-brand-900  hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1 w-full"
+                            className="text-brand-600 hover:bg-brand-100 px-3 py-4 border-x border-gray-200 flex flex-1 w-full"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsFinishModalProjetOpen(true);

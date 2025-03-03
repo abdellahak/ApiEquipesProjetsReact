@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, User2, Mail, Lock } from "lucide-react";
 import { register } from "../services/authService";
 
@@ -12,16 +12,16 @@ export default function Register() {
     confirmPassword: "",
   });
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    setError("");
+    setErrors([]);
 
     try {
       if (formData.password !== formData.confirmPassword) {
-        setError("Les mots de passe ne correspondent pas");
+        setErrors(["Les mots de passe ne correspondent pas"]);
         return;
       }
 
@@ -31,7 +31,6 @@ export default function Register() {
         password: formData.password,
         password_confirmation: formData.confirmPassword,
       });
-
       setMessage(response.data.message);
       setFormData({
         name: "",
@@ -40,18 +39,25 @@ export default function Register() {
         confirmPassword: "",
       });
     } catch (error) {
-      setError(error.response.data.message);
+      const errorMessages = Object.values(error.response.data.data);
+      setErrors(errorMessages);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {error && (
+      {errors.length > 0 && (
         <div
           className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
           role="alert"
         >
-          <span className="font-medium">Erreur:</span> {error}
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index}>
+                <span className="font-medium">Erreur:</span> {error}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
       {message && (
@@ -63,9 +69,10 @@ export default function Register() {
         </div>
       )}
       <div className="max-w-xl w-full bg-white px-8 py-16 rounded-xl shadow-md relative">
-        <button 
-        onClick={() => navigate("/")}
-        className="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center">
+        <button
+          onClick={() => navigate("/")}
+          className="absolute top-4 left-4 text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center"
+        >
           <ArrowLeft className="mx-4" /> Retour à l'accueil
         </button>
         <div className="text-center mb-8">
