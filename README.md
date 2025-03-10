@@ -39,25 +39,6 @@ npm install
 npm start
 ```
 
-## API Endpoints
-
-This React application interacts with the following Laravel REST API endpoints:
-
-### Teams
-
-- `GET /api/personnes` - Retrieve all teams
-- `POST /api/personnes` - Create a new team
-- `GET /api/personnes/:id` - Retrieve a specific team
-- `PUT /api/personnes/:id` - Update a specific team
-- `DELETE /api/personnes/:id` - Delete a specific team
-
-### Projects
-
-- `GET /api/projects` - Retrieve all projects
-- `POST /api/projects` - Create a new project
-- `GET /api/projects/:id` - Retrieve a specific project
-- `PUT /api/projects/:id` - Update a specific project
-- `DELETE /api/projects/:id` - Delete a specific project
 
 ## Contributing
 
@@ -73,5 +54,26 @@ For any inquiries, please contact [Abdellah Khouden] at [khoudenak@gmail.com].
 
 ## Screenshots
 
-![Screenshot 1](screenshot1.png)
-![Screenshot 2](screenshot2.png)
+1. Dashboard :
+![Capture d'écran 2025-03-10 225543](https://github.com/user-attachments/assets/9c3982b0-d705-44a5-96bf-3205e2e45a57)
+
+2. Projects List :
+![Capture d'écran 2025-03-10 225558](https://github.com/user-attachments/assets/5c633339-955a-446d-ae08-7b1456ec4a91)
+
+3. Projects members :
+![Capture d'écran 2025-03-10 225611](https://github.com/user-attachments/assets/18c37d32-3dae-4db2-b1a7-fd7ab64dac45)
+
+4. Add porject
+![Capture d'écran 2025-03-10 225934](https://github.com/user-attachments/assets/02596562-a675-4ef3-93f2-ceaebfb551e4)
+
+5. Edit Project :
+![Capture d'écran 2025-03-10 225629](https://github.com/user-attachments/assets/fdeb8d5d-fb37-4f1e-aded-f7f99c154eba)
+
+6. persons list :
+![Capture d'écran 2025-03-10 225641](https://github.com/user-attachments/assets/eef81ed3-88a3-461f-98a4-87647dad4285)
+
+7. edit person :
+![Capture d'écran 2025-03-10 225655](https://github.com/user-attachments/assets/24492f55-f9ca-4609-91e3-50ce957a39bd)
+
+8. add person : 
+![Capture d'écran 2025-03-10 225924](https://github.com/user-attachments/assets/f2e4e1fe-5689-4247-bf1a-fe6f1591323d)
